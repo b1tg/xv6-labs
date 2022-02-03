@@ -6,6 +6,42 @@
 #include "memlayout.h"
 #include "spinlock.h"
 #include "proc.h"
+#include "sysinfo.h"
+
+//struct sysinfo;
+uint64
+sys_sysinfo(void)
+{
+  //printf("sys_sysinfo 1\n");
+  //struct sysinfo* out = {0};
+  //void * out = 0;
+  uint64 out;
+  struct sysinfo info;
+  if(argaddr(0, &out) < 0)
+    return -1;
+  //printf("sys_sysinfo out: %p\n", out);
+  //info.freemem = 0xdead;
+  info.freemem = k_get_free_mem();
+  info.nproc = proc_not_unused();
+  if(copyout(myproc()->pagetable, (uint64)out, (char*)&info, sizeof(info)) < 0) {
+   // printf("copyout failed\n");
+    return -1;
+  }
+  //printf("sys_sysinfo copy success\n");
+  return 0;
+}
+
+uint64
+sys_trace(void)
+{
+  int mask;
+  if(argint(0, &mask) < 0)
+    return -1;
+   myproc()->mask = mask;
+//printf("[*] sys_trace %d %d\n", mask, myproc()->mask);
+  //return trace(mask);
+  return 0;
+}
 
 uint64
 sys_exit(void)

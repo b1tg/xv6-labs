@@ -10,6 +10,8 @@ sinfo(struct sysinfo *info) {
     printf("FAIL: sysinfo failed");
     exit(1);
   }
+  printf("[*] sysinfo->freemem %d \n", info->freemem);
+  printf("[*] sysinfo->nproc %d \n", info->nproc);
 }
 
 //

@@ -36,7 +36,7 @@ def test_trace_nothing():
     ]))
     r.match(no=[".* syscall .*"])
 
-@test(5, "trace children")
+@test(500, "trace children")
 def test_trace_children():
     r.run_qemu(shell_script([
         'trace 2 usertests forkforkfork'
