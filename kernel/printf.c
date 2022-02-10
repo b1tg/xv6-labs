@@ -132,3 +132,25 @@ printfinit(void)
   initlock(&pr.lock, "pr");
   pr.locking = 1;
 }
+
+void backtrace(void) {
+	printf("backtrace:\n");
+	uint64 ret;
+  uint64 fp = r_fp();
+	printf("fp: %p %p %p\n", fp, PGROUNDDOWN(fp), PGROUNDUP(fp));
+	// TODO: 需要每次计算 down 和 up 还是一次计算
+  while(fp>PGROUNDDOWN(fp) && fp <PGROUNDUP(fp)) {
+		ret = *((uint64*)fp - 1);
+		printf("%p\n", ret);	
+		fp = *((uint64*)fp - 2);
+	//	printf("fp: %p %p %p\n", fp, PGROUNDDOWN(fp), PGROUNDUP(fp));
+  }
+  //uint64 ret = *((uint64*)fp - 1);
+  //printf("%p\n", ret);	
+	//printf("fp: %p %p %p\n", fp, PGROUNDDOWN(fp), PGROUNDUP(fp));
+  //fp = *((uint64*)fp - 2);
+  //ret = *((uint64*)fp - 1);
+  //printf("%p\n", ret);	
+	//printf("fp: %p %p %p\n", fp, PGROUNDDOWN(fp), PGROUNDUP(fp));
+
+}

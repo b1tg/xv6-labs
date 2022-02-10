@@ -76,6 +76,55 @@ usertrap(void)
   if(p->killed)
     exit(-1);
 
+
+  if(which_dev == 2) {
+    //printf("== got time tick 0\n");
+		if(p->trapframe1->t6 == 0xde) {
+			//printf("1last trap not return yet.\n");
+		} else if (p->tick > 0) {
+			p->tick_pass++;
+			if (p->tick_pass >= p->tick) {
+				//printf("== func: %p\n", p->tick_handler);
+				//(p->tick_handler)();
+				// save state
+				p->trapframe1->ra = p->trapframe->ra;
+				p->trapframe1->sp = p->trapframe->sp;
+				p->trapframe1->gp = p->trapframe->gp;
+				p->trapframe1->tp = p->trapframe->tp;
+				p->trapframe1->a0 = p->trapframe->a0;
+				p->trapframe1->a1 = p->trapframe->a1;
+				p->trapframe1->a2 = p->trapframe->a2;
+				p->trapframe1->a3 = p->trapframe->a3;
+				p->trapframe1->a4 = p->trapframe->a4;
+				p->trapframe1->a5 = p->trapframe->a5;
+				p->trapframe1->a6 = p->trapframe->a6;
+				p->trapframe1->a7 = p->trapframe->a7;
+				p->trapframe1->s0 = p->trapframe->s0;
+				p->trapframe1->s1 = p->trapframe->s1;
+				p->trapframe1->s2 = p->trapframe->s2;
+				p->trapframe1->s3 = p->trapframe->s3;
+				p->trapframe1->s4 = p->trapframe->s4;
+				p->trapframe1->s5 = p->trapframe->s5;
+				p->trapframe1->s6 = p->trapframe->s6;
+				p->trapframe1->s7 = p->trapframe->s7;
+				p->trapframe1->s8 = p->trapframe->s8;
+				p->trapframe1->s9 = p->trapframe->s9;
+				p->trapframe1->s10 = p->trapframe->s10;
+				p->trapframe1->s11 = p->trapframe->s11;
+				p->trapframe1->epc = p->trapframe->epc;
+				
+				p->trapframe->epc = (uint64)p->tick_handler;
+	      // TODO: do some lock here
+	      p->trapframe1->t6 = 0xde;
+				
+				p->tick_pass = 0;
+			}
+		} else{
+			//printf("p->tick <=0 \n");
+
+    }
+    //printf("== got time tick 1\n");
+  }
   // give up the CPU if this is a timer interrupt.
   if(which_dev == 2)
     yield();
